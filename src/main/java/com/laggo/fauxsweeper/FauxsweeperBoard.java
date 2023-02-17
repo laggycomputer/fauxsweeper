@@ -17,14 +17,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class FauxsweeperBoard<CellT extends ICell> {
-    // TODO:  config
     public static final double GUI_SCALE = 1.5d;
+    private final Font FONT;
     private final int width;
     private final int height;
     private final int mineCount;
@@ -32,11 +33,11 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private final Class<CellT> cellTRef;
     private final HashMap<BoardLocation, CellT> cells = new HashMap<>();
     private final Pane gamePane = new VBox(new StackPane(), new GridPane());
+    private final IntegerProperty gameTime = new SimpleIntegerProperty(this, "gameTime", 0);
     BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
     private GameState gameState = GameState.FIRST;
     private ICell clickedMine;
     private Timer timer = new Timer(true);
-    private IntegerProperty gameTime = new SimpleIntegerProperty(this, "gameTime", 0);
 
     public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount) {
         this.cellTRef = cellTRef;
@@ -68,6 +69,8 @@ public class FauxsweeperBoard<CellT extends ICell> {
             child.setOnMousePressed(this::handleMouseDown);
             child.setOnMouseReleased(this::handleMouseUp);
         }
+
+        this.FONT = Font.loadFont(Objects.requireNonNull(FauxsweeperBoard.class.getResourceAsStream("/Minecraftia-Regular.ttf")), -1);
     }
 
     private void onTimerTick() {
@@ -214,7 +217,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
         int minesLeft = (int) (this.mineCount - this.cells.values().stream().filter(c -> c.getState() != CellState.NO_FLAG).count());
 
         Text textMinesLeft = new Text(Integer.toString(minesLeft));
-        textMinesLeft.setFont(FauxsweeperMain.FONT);
+        textMinesLeft.setFont(FONT);
         StackPane.setAlignment(textMinesLeft, Pos.CENTER_LEFT);
 
         String faceButtonImage;
@@ -235,7 +238,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
         StackPane.setAlignment(faceButton, Pos.CENTER);
 
         Text textTimer = new Text(Integer.toString(this.gameTime.get()));
-        textTimer.setFont(FauxsweeperMain.FONT);
+        textTimer.setFont(FONT);
         StackPane.setAlignment(textTimer, Pos.CENTER_RIGHT);
 
         upperPane.getChildren().clear();

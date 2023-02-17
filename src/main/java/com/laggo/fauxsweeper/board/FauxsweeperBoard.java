@@ -36,22 +36,21 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private final HashMap<BoardLocation, CellT> cells = new HashMap<>();
     private final Pane gamePane = new VBox(new StackPane(), new GridPane());
     private final IntegerProperty gameTime = new SimpleIntegerProperty(this, "gameTime", 0);
+    private final boolean timerEnabled;
     BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
     private GameState gameState = GameState.FIRST;
     private ICell clickedMine;
     private Timer timer = new Timer(true);
-    private final boolean timerEnabled;
 
-    public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount, boolean timerEnabled) {
+    public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount, boolean timerEnabled, Long seed) {
         this.cellTRef = cellTRef;
 
         this.width = width;
         this.height = height;
         this.mineCount = mineCount;
-        this.timerEnabled=timerEnabled;
+        this.timerEnabled = timerEnabled;
 
-        // TODO: not random
-        this.rand = new Random(69420);
+        this.rand = (seed == null) ? new Random() : new Random(seed);
 
         this.fillWithEmptyCells();
         this.placeMines(this.mineCount);
@@ -79,7 +78,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
     public static FauxsweeperBoard<? extends ICell> fromConfiguration(Configuration config) {
         // TODO: different cell types
-        return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled());
+        return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled(), config.usesSetSeed() ? config.getSetSeed() : null);
     }
 
     private void onTimerTick() {

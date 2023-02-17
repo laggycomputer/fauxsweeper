@@ -13,12 +13,16 @@ public class Configuration {
     private final int boardHeight;
     private final int mineCount;
     private final boolean timerEnabled;
+    private final boolean useSetSeed;
+    private final long setSeed;
 
-    Configuration(int boardWidth, int boardHeight, int mineCount, boolean timerEnabled) {
+    Configuration(int boardWidth, int boardHeight, int mineCount, boolean timerEnabled, boolean useSetSeed, long setSeed) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
         this.mineCount = mineCount;
         this.timerEnabled = timerEnabled;
+        this.useSetSeed = useSetSeed;
+        this.setSeed = setSeed;
     }
 
     public static Configuration fromFile(File file) {
@@ -43,7 +47,7 @@ public class Configuration {
     }
 
     public static Configuration defaultConfiguration() {
-        return new Configuration(10, 10, 10, true);
+        return new Configuration(10, 10, 10, true, false, 69420);
     }
 
     public boolean isValid() {
@@ -73,5 +77,13 @@ public class Configuration {
 
     public boolean isTimerEnabled() {
         return this.timerEnabled;
+    }
+
+    public boolean usesSetSeed() {
+        return this.useSetSeed;
+    }
+
+    public long getSetSeed() {
+        return this.setSeed;
     }
 }

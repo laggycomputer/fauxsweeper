@@ -1,10 +1,13 @@
 package com.laggo.fauxsweeper;
 
 import com.laggo.fauxsweeper.board.FauxsweeperBoard;
-import com.laggo.fauxsweeper.cell.SquareCell;
+import com.laggo.fauxsweeper.cell.ICell;
+import com.laggo.fauxsweeper.configuration.Configuration;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 public class FauxsweeperMain extends Application {
     public static void main(String[] args) {
@@ -13,7 +16,11 @@ public class FauxsweeperMain extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        FauxsweeperBoard<SquareCell> board = new FauxsweeperBoard<>(SquareCell.class, 10, 10, 10);
+        Configuration configuration = Configuration.fromFile(new File("config.json"));
+
+        FauxsweeperBoard<? extends ICell> board = FauxsweeperBoard.fromConfiguration(configuration);
+
+        configuration.toFile(new File("config.json"));
 
         primaryStage.setTitle("Fauxsweeper");
         primaryStage.setScene(new Scene(board.getGamePane()));

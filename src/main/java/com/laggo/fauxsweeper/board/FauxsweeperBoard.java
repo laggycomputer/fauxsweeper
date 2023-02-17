@@ -1,6 +1,7 @@
 package com.laggo.fauxsweeper.board;
 
 import com.laggo.fauxsweeper.cell.*;
+import com.laggo.fauxsweeper.configuration.Configuration;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -39,6 +40,11 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private GameState gameState = GameState.FIRST;
     private ICell clickedMine;
     private Timer timer = new Timer(true);
+
+    public static FauxsweeperBoard<? extends ICell> fromConfiguration(Configuration config) {
+        // TODO: different cell types
+        return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount());
+    }
 
     public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount) {
         this.cellTRef = cellTRef;

@@ -216,7 +216,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
         int minesLeft = (int) (this.mineCount - this.cells.values().stream().filter(c -> c.getState() != CellState.NO_FLAG).count());
 
-        Text textMinesLeft = new Text(Integer.toString(minesLeft));
+        Text textMinesLeft = new Text(String.format("%03d", minesLeft));
         textMinesLeft.setFont(FONT);
         StackPane.setAlignment(textMinesLeft, Pos.CENTER_LEFT);
 
@@ -237,7 +237,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
         faceButton.setOnAction(this::newGame);
         StackPane.setAlignment(faceButton, Pos.CENTER);
 
-        Text textTimer = new Text(Integer.toString(this.gameTime.get()));
+        Text textTimer = new Text(String.format("%03d", Math.min(999, gameTime.get())));
         textTimer.setFont(FONT);
         StackPane.setAlignment(textTimer, Pos.CENTER_RIGHT);
 

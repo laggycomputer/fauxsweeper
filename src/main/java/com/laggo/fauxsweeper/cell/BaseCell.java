@@ -98,8 +98,7 @@ public abstract class BaseCell implements ICell {
                 case FLAG:
                     return "/flag.png";
                 case FLAG_POTENTIAL:
-                    // TODO: draw potential flag image
-                    return "/flag.png";
+                    return "/flag-potential.png";
             }
         } else {
             if (this.getState() != CellState.NO_FLAG && this.getValue() != CellValue.MINE) {

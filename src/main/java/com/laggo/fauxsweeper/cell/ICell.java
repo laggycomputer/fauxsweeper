@@ -22,8 +22,6 @@ public interface ICell {
 
     CellState getState();
 
-    void setState(CellState state);
-
     Set<? extends ICell> getNeighbors();
 
     Set<? extends ICell> getConnectedMatching(Predicate<ICell> pred);

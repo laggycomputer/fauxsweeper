@@ -45,11 +45,6 @@ public abstract class BaseCell implements ICell {
     }
 
     @Override
-    public void setState(CellState state) {
-        this.state = state;
-    }
-
-    @Override
     public Set<? extends ICell> getConnectedMatching(Predicate<ICell> pred) {
         HashMap<ICell, Boolean> foundSoFar = new HashMap<>();
         this.recursiveConnectedMatching(this, foundSoFar, pred);

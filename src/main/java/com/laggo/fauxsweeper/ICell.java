@@ -1,7 +1,7 @@
 package com.laggo.fauxsweeper;
 
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 
 import java.util.Set;
 import java.util.function.Predicate;
@@ -34,4 +34,7 @@ public interface ICell {
     void setRevealed(boolean revealed);
 
     String getDisplayIcon();
+
+    ClickResult onLeftClick();
+    void onRightClick(MouseEvent evt);
 }

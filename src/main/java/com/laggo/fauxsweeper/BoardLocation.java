@@ -25,8 +25,12 @@ public class BoardLocation implements Cloneable {
     }
 
     @Override
-    public BoardLocation clone() throws CloneNotSupportedException {
-        super.clone();
+    public BoardLocation clone() {
+        try {
+            super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
         return new BoardLocation(this.x, this.y);
     }
 

@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -26,12 +27,12 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private final int height;
     private final int mineCount;
     private final Random rand;
-    private final GameState gameState = GameState.FIRST;
     private final Class<CellT> cellTRef;
     private final HashMap<BoardLocation, CellT> cells = new HashMap<>();
     private final Pane gamePane = new VBox(new StackPane(), new GridPane());
     BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
-    private CellT clickedMine;
+    private GameState gameState = GameState.FIRST;
+    private ICell clickedMine;
 
     public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount) {
         this.cellTRef = cellTRef;
@@ -83,7 +84,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
         }
     }
 
-    private void secretlyMoveMine(BoardLocation mineLoc) throws CloneNotSupportedException {
+    private void secretlyMoveMine(BoardLocation mineLoc) {
         BoardLocation oldMineLoc = mineLoc.clone();
 
         while (this.getCellAt(mineLoc).getValue() == CellValue.MINE) {
@@ -95,13 +96,14 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.computeNumberedCells();
     }
 
-    public CellT getClickedMine() {
+    public ICell getClickedMine() {
         return this.clickedMine;
     }
 
     public void newGame(ActionEvent evt) {
         this.cells.clear();
         this.clickedMine = null;
+        this.gameState = GameState.FIRST;
 
         this.fillWithEmptyCells();
         this.placeMines(this.mineCount);
@@ -111,6 +113,44 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
     public CellT getCellAt(BoardLocation loc) {
         return this.cells.get(loc);
+    }
+
+    public boolean isGameOver() {
+        return this.gameState == GameState.WON || this.gameState == GameState.LOST;
+    }
+
+    public void handleBoardClick(MouseEvent evt) {
+        if (evt.getTarget() instanceof CellButton) {
+            if (evt.getButton() == MouseButton.PRIMARY) {
+                ClickResult result = Objects.requireNonNull(((CellButton) evt.getTarget()).getCell()).onLeftClick();
+                if (result == ClickResult.FAIL) {
+                    if (this.gameState == GameState.FIRST) {
+                        this.gameState = GameState.IN_PROGRESS;
+                        this.secretlyMoveMine(((CellButton) evt.getTarget()).getCell().getLocation());
+                        ((CellButton) evt.getTarget()).getCell().onLeftClick();
+                    } else {
+                        this.gameState = GameState.LOST;
+                        this.clickedMine = ((CellButton) evt.getTarget()).getCell();
+                        this.revealAll();
+                    }
+                } else if (result == ClickResult.OK) {
+                    this.gameState = GameState.IN_PROGRESS;
+                    if (this.cells.values().stream().noneMatch(c -> !c.isRevealed() && c.getValue() != CellValue.MINE)) {
+                        this.gameState = GameState.WON;
+                    }
+                }
+            } else if (evt.getButton() == MouseButton.SECONDARY) {
+                Objects.requireNonNull(((CellButton) evt.getTarget()).getCell()).onRightClick(evt);
+            }
+        }
+
+        this.updateGamePane();
+    }
+
+    private void revealAll() {
+        for (CellT cell : this.cells.values()) {
+            cell.setRevealed(true);
+        }
     }
 
     public String dump(boolean xRay) {

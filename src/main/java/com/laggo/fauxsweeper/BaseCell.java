@@ -1,5 +1,7 @@
 package com.laggo.fauxsweeper;
 
+import javafx.scene.input.MouseEvent;
+
 import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -96,30 +98,66 @@ public abstract class BaseCell implements ICell {
         if (!this.revealed) {
             switch (this.getState()) {
                 case NO_FLAG:
-                    return "question.png";
+                    return "/question.png";
                 case FLAG:
-                    return "flag.png";
+                    return "/flag.png";
                 case FLAG_POTENTIAL:
                     // TODO: draw potential flag image
-                    return "flag.png";
+                    return "/flag.png";
             }
         } else {
             if (this.getState() != CellState.NO_FLAG) {
                 // then the game has ended
-                return "misflagged.png";
+                return "/misflagged.png";
             }
             if (this.getValue() == CellValue.MINE) {
-                return (this.getBoard().getClickedMine() == this) ? "mine-death.png" : "mine-ceil.png";
+                return (this.getBoard().getClickedMine() == this) ? "/mine-death.png" : "/mine-ceil.png";
             }
 
             if (this.getValue() == CellValue.ZERO) {
                 return null;
             }
 
-            return "open" + this.getValue().ordinal() + ".png";
+            return "/open" + this.getValue().ordinal() + ".png";
 
         }
         // technically unreachable
         return null;
+    }
+
+    @Override
+    public ClickResult onLeftClick() {
+        if (this.getBoard().isGameOver()) {
+            return ClickResult.INVALID;
+        }
+
+        if (this.revealed) {
+            return ClickResult.INVALID;
+        }
+
+        if (this.getState() != CellState.NO_FLAG) {
+            return ClickResult.INVALID;
+        }
+
+        if (this.getValue() == CellValue.MINE) {
+            return ClickResult.FAIL;
+        }
+
+        if (this.value != CellValue.ZERO) {
+            this.revealed = true;
+            return ClickResult.OK;
+        }
+
+        // we are clicking a zero cell
+        this.revealed = true;
+        for (ICell connectedCell : this.getConnectedMatching(c -> c.getValue() == CellValue.ZERO)) {
+            connectedCell.setRevealed(true);
+        }
+
+        return ClickResult.OK;
+    }
+
+    public void onRightClick(MouseEvent evt) {
+        this.state = CellState.values()[(this.getState().ordinal() + 3 + (evt.isShiftDown() ? -1 : 1)) % 3];
     }
 }

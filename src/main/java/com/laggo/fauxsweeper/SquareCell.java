@@ -16,7 +16,6 @@ public class SquareCell extends BaseCell {
     @Override
     public CellButton getButton() {
         CellButton button = new CellButton();
-        // TODO: get graphics, set events, etc
         button.setCell(this);
         button.setFocusTraversable(false);
         button.setOnMousePressed(this.getBoard()::handleMouseDown);

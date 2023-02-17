@@ -263,7 +263,6 @@ public class FauxsweeperBoard<CellT extends ICell> {
         if (evt.isPrimaryButtonDown()) {
             this.isMouseDown.set(true);
         }
-        // TODO
     }
 
     public void handleMouseUp(MouseEvent evt) {

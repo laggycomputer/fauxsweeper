@@ -20,8 +20,8 @@ public class SquareCell extends BaseCell {
         button.setFocusTraversable(false);
         button.setOnMousePressed(this.getBoard()::handleMouseDown);
         button.setOnMouseReleased(evt -> {
-            this.getBoard().handleBoardClick(evt);
             this.getBoard().handleMouseUp(evt);
+            this.getBoard().handleBoardClick(evt);
         });
 
         button.setMaxSize(16 * FauxsweeperBoard.GUI_SCALE, 16 * FauxsweeperBoard.GUI_SCALE);

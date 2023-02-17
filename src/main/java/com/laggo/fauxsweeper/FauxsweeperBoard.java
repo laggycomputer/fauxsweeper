@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -62,6 +63,11 @@ public class FauxsweeperBoard<CellT extends ICell> {
                 onTimerTick();
             }
         }, 1000, 1000);
+
+        for (Node child : this.gamePane.getChildren()) {
+            child.setOnMousePressed(this::handleMouseDown);
+            child.setOnMouseReleased(this::handleMouseUp);
+        }
     }
 
     private void onTimerTick() {

@@ -2,7 +2,7 @@ package com.laggo.fauxsweeper;
 
 import com.laggo.fauxsweeper.board.FauxsweeperBoard;
 import com.laggo.fauxsweeper.cell.ICell;
-import com.laggo.fauxsweeper.configuration.Configuration;
+import com.laggo.fauxsweeper.config.Configuration;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

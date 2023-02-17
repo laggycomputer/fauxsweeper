@@ -1,7 +1,7 @@
 package com.laggo.fauxsweeper.board;
 
 import com.laggo.fauxsweeper.cell.*;
-import com.laggo.fauxsweeper.configuration.Configuration;
+import com.laggo.fauxsweeper.config.Configuration;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;

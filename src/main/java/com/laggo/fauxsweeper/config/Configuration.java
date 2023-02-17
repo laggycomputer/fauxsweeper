@@ -1,4 +1,4 @@
-package com.laggo.fauxsweeper.configuration;
+package com.laggo.fauxsweeper.config;
 
 import com.google.gson.Gson;
 

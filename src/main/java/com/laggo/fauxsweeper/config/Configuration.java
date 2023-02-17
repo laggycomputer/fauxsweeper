@@ -12,11 +12,13 @@ public class Configuration {
     private final int boardWidth;
     private final int boardHeight;
     private final int mineCount;
+    private final boolean timerEnabled;
 
-    Configuration(int boardWidth, int boardHeight, int mineCount) {
+    Configuration(int boardWidth, int boardHeight, int mineCount, boolean timerEnabled) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
         this.mineCount = mineCount;
+        this.timerEnabled=timerEnabled;
     }
 
     public static Configuration fromFile(File file) {
@@ -41,7 +43,7 @@ public class Configuration {
     }
 
     public static Configuration defaultConfiguration() {
-        return new Configuration(10, 10, 10);
+        return new Configuration(10, 10, 10, true);
     }
 
     public boolean isValid() {
@@ -67,5 +69,9 @@ public class Configuration {
 
     public int getBoardWidth() {
         return this.boardWidth;
+    }
+
+    public boolean isTimerEnabled() {
+        return this.timerEnabled;
     }
 }

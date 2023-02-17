@@ -40,18 +40,15 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private GameState gameState = GameState.FIRST;
     private ICell clickedMine;
     private Timer timer = new Timer(true);
+    private final boolean timerEnabled;
 
-    public static FauxsweeperBoard<? extends ICell> fromConfiguration(Configuration config) {
-        // TODO: different cell types
-        return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount());
-    }
-
-    public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount) {
+    public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount, boolean timerEnabled) {
         this.cellTRef = cellTRef;
 
         this.width = width;
         this.height = height;
         this.mineCount = mineCount;
+        this.timerEnabled=timerEnabled;
 
         // TODO: not random
         this.rand = new Random(69420);
@@ -78,6 +75,11 @@ public class FauxsweeperBoard<CellT extends ICell> {
         }
 
         this.FONT = Font.loadFont(Objects.requireNonNull(FauxsweeperBoard.class.getResourceAsStream("/Minecraftia-Regular.ttf")), -1);
+    }
+
+    public static FauxsweeperBoard<? extends ICell> fromConfiguration(Configuration config) {
+        // TODO: different cell types
+        return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled());
     }
 
     private void onTimerTick() {
@@ -249,7 +251,10 @@ public class FauxsweeperBoard<CellT extends ICell> {
         StackPane.setAlignment(textTimer, Pos.CENTER_RIGHT);
 
         upperPane.getChildren().clear();
-        upperPane.getChildren().addAll(textMinesLeft, faceButton, textTimer);
+        upperPane.getChildren().addAll(textMinesLeft, faceButton);
+        if (this.timerEnabled) {
+            upperPane.getChildren().add(textTimer);
+        }
     }
 
     private void updateBoardPane() {

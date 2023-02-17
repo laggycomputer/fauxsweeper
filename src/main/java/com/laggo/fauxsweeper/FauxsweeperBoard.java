@@ -1,7 +1,10 @@
 package com.laggo.fauxsweeper;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,9 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FauxsweeperBoard<CellT extends ICell> {
@@ -33,6 +34,8 @@ public class FauxsweeperBoard<CellT extends ICell> {
     BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
     private GameState gameState = GameState.FIRST;
     private ICell clickedMine;
+    private Timer timer = new Timer(true);
+    private IntegerProperty gameTime = new SimpleIntegerProperty(this, "gameTime", 0);
 
     public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount) {
         this.cellTRef = cellTRef;
@@ -49,8 +52,24 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.computeNumberedCells();
 
         this.isMouseDown.addListener(evt -> this.updateUpperPane());
+        this.gameTime.addListener(evt -> this.updateUpperPane());
 
         this.updateGamePane();
+
+        this.timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                onTimerTick();
+            }
+        }, 1000, 1000);
+    }
+
+    private void onTimerTick() {
+        Platform.runLater(() -> {
+            if (!this.isGameOver()) {
+                this.gameTime.set(this.gameTime.get() + 1);
+            }
+        });
     }
 
     private void fillWithEmptyCells() {
@@ -104,11 +123,21 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.cells.clear();
         this.clickedMine = null;
         this.gameState = GameState.FIRST;
+        this.gameTime.set(0);
 
         this.fillWithEmptyCells();
         this.placeMines(this.mineCount);
         this.computeNumberedCells();
         this.updateGamePane();
+
+        this.timer.cancel();
+        this.timer = new Timer(false);
+        this.timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                onTimerTick();
+            }
+        }, 1000, 1000);
     }
 
     public CellT getCellAt(BoardLocation loc) {
@@ -137,6 +166,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
                     this.gameState = GameState.IN_PROGRESS;
                     if (this.cells.values().stream().noneMatch(c -> !c.isRevealed() && c.getValue() != CellValue.MINE)) {
                         this.gameState = GameState.WON;
+                        this.revealAll();
                     }
                 }
             } else if (evt.getButton() == MouseButton.SECONDARY) {
@@ -196,12 +226,14 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
         Button faceButton = new Button("", new ImageView(new Image(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(faceButtonImage)), 16 * GUI_SCALE * 1.25, 16 * GUI_SCALE * 1.25, true, false)));
         faceButton.setOnAction(this::newGame);
-
         StackPane.setAlignment(faceButton, Pos.CENTER);
 
-        // TODO: timer
+        Text textTimer = new Text(Integer.toString(this.gameTime.get()));
+        textTimer.setFont(FauxsweeperMain.FONT);
+        StackPane.setAlignment(textTimer, Pos.CENTER_RIGHT);
+
         upperPane.getChildren().clear();
-        upperPane.getChildren().addAll(textMinesLeft, faceButton);
+        upperPane.getChildren().addAll(textMinesLeft, faceButton, textTimer);
     }
 
     private void updateBoardPane() {

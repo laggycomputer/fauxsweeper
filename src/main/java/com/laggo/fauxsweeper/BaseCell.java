@@ -52,7 +52,7 @@ public abstract class BaseCell implements ICell {
     public Set<? extends ICell> getConnectedMatching(Predicate<ICell> pred) {
         HashMap<ICell, Boolean> foundSoFar = new HashMap<>();
         this.recursiveConnectedMatching(this, foundSoFar, pred);
-        // this is technically linked to the hashset but it'll be destroyed anyway so who cares
+        // this is technically linked to the hashset, but it'll be destroyed anyway so who cares
         return foundSoFar.keySet();
     }
 
@@ -106,10 +106,11 @@ public abstract class BaseCell implements ICell {
                     return "/flag.png";
             }
         } else {
-            if (this.getState() != CellState.NO_FLAG) {
+            if (this.getState() != CellState.NO_FLAG && this.getValue() != CellValue.MINE) {
                 // then the game has ended
                 return "/misflagged.png";
             }
+
             if (this.getValue() == CellValue.MINE) {
                 return (this.getBoard().getClickedMine() == this) ? "/mine-death.png" : "/mine-ceil.png";
             }
@@ -119,7 +120,6 @@ public abstract class BaseCell implements ICell {
             }
 
             return "/open" + this.getValue().ordinal() + ".png";
-
         }
         // technically unreachable
         return null;

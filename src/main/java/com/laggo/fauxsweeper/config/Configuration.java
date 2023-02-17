@@ -18,7 +18,7 @@ public class Configuration {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
         this.mineCount = mineCount;
-        this.timerEnabled=timerEnabled;
+        this.timerEnabled = timerEnabled;
     }
 
     public static Configuration fromFile(File file) {

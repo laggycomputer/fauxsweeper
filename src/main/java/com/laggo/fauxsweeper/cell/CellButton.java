@@ -1,4 +1,4 @@
-package com.laggo.fauxsweeper;
+package com.laggo.fauxsweeper.cell;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

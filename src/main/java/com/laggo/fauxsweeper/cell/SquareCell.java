@@ -1,5 +1,6 @@
-package com.laggo.fauxsweeper;
+package com.laggo.fauxsweeper.cell;
 
+import com.laggo.fauxsweeper.board.FauxsweeperBoard;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;

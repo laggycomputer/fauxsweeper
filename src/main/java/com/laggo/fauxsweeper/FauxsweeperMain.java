@@ -1,5 +1,7 @@
 package com.laggo.fauxsweeper;
 
+import com.laggo.fauxsweeper.board.FauxsweeperBoard;
+import com.laggo.fauxsweeper.cell.SquareCell;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

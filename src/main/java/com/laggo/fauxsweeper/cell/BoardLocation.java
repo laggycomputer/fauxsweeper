@@ -1,4 +1,4 @@
-package com.laggo.fauxsweeper;
+package com.laggo.fauxsweeper.cell;
 
 public class BoardLocation implements Cloneable {
     private final int x;

@@ -1,4 +1,4 @@
-package com.laggo.fauxsweeper;
+package com.laggo.fauxsweeper.cell;
 
 public enum CellValue {
     ZERO,

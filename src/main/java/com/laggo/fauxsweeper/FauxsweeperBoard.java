@@ -1,13 +1,27 @@
 package com.laggo.fauxsweeper;
 
-import javafx.scene.layout.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 public class FauxsweeperBoard<CellT extends ICell> {
+    // TODO:  config
+    public static final double GUI_SCALE = 1.5d;
     private final int width;
     private final int height;
     private final int mineCount;
@@ -16,8 +30,10 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private final Class<CellT> cellTRef;
     private final HashMap<BoardLocation, CellT> cells = new HashMap<>();
     private final Pane gamePane = new VBox(new StackPane(), new GridPane());
+    BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
+    private CellT clickedMine;
 
-    public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount) {
         this.cellTRef = cellTRef;
 
         this.width = width;
@@ -30,14 +46,22 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.fillWithEmptyCells();
         this.placeMines(this.mineCount);
         this.computeNumberedCells();
+
+        this.isMouseDown.addListener(evt -> this.updateUpperPane());
+
+        this.updateGamePane();
     }
 
-    private void fillWithEmptyCells() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private void fillWithEmptyCells() {
         for (int x = 0; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {
                 BoardLocation loc = new BoardLocation(x, y);
                 // actually, this should never fail
-                this.cells.put(loc, cellTRef.getConstructor(FauxsweeperBoard.class, BoardLocation.class).newInstance(this, loc));
+                try {
+                    this.cells.put(loc, cellTRef.getConstructor(FauxsweeperBoard.class, BoardLocation.class).newInstance(this, loc));
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException("this really shouldn't happen");
+                }
             }
         }
     }
@@ -71,6 +95,20 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.computeNumberedCells();
     }
 
+    public CellT getClickedMine() {
+        return this.clickedMine;
+    }
+
+    public void newGame(ActionEvent evt) {
+        this.cells.clear();
+        this.clickedMine = null;
+
+        this.fillWithEmptyCells();
+        this.placeMines(this.mineCount);
+        this.computeNumberedCells();
+        this.updateGamePane();
+    }
+
     public CellT getCellAt(BoardLocation loc) {
         return this.cells.get(loc);
     }
@@ -95,8 +133,64 @@ public class FauxsweeperBoard<CellT extends ICell> {
     }
 
     private void updateUpperPane() {
-        Pane upperPane = (Pane) this.gamePane.getChildren().get(0);
+        StackPane upperPane = (StackPane) this.gamePane.getChildren().get(0);
 
+        int minesLeft = (int) (this.mineCount - this.cells.values().stream().filter(c -> c.getState() != CellState.NO_FLAG).count());
 
+        Text textMinesLeft = new Text(Integer.toString(minesLeft));
+        textMinesLeft.setFont(FauxsweeperMain.FONT);
+        StackPane.setAlignment(textMinesLeft, Pos.CENTER_LEFT);
+
+        String faceButtonImage;
+        switch (this.gameState) {
+            case WON:
+                faceButtonImage = "win.png";
+                break;
+            case LOST:
+                faceButtonImage = "dead.png";
+                break;
+            default:
+                faceButtonImage = (isMouseDown.get()) ? "ohh.png" : "smile.png";
+                break;
+        }
+
+        Button faceButton = new Button("", new ImageView(new Image(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(faceButtonImage)), 16 * GUI_SCALE * 1.25, 16 * GUI_SCALE * 1.25, true, false)));
+        faceButton.setOnAction(this::newGame);
+
+        StackPane.setAlignment(faceButton, Pos.CENTER);
+
+        // TODO: timer
+        upperPane.getChildren().clear();
+        upperPane.getChildren().addAll(textMinesLeft, faceButton);
+    }
+
+    private void updateBoardPane() {
+        // button shape and layout is not the same across all cells so let the type param handle this
+        this.getCellAt(new BoardLocation(0, 0)).drawToBoard((GridPane) this.gamePane.getChildren().get(1));
+    }
+
+    public Pane getGamePane() {
+        return this.gamePane;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public void handleMouseDown(MouseEvent evt) {
+        if (evt.isPrimaryButtonDown()) {
+            this.isMouseDown.set(true);
+        }
+        // TODO
+    }
+
+    public void handleMouseUp(MouseEvent evt) {
+        if (!evt.isPrimaryButtonDown()) {
+            this.isMouseDown.set(false);
+        }
     }
 }

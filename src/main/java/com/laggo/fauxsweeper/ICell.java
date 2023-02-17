@@ -1,5 +1,6 @@
 package com.laggo.fauxsweeper;
 
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
 import java.util.Set;
@@ -12,7 +13,7 @@ public interface ICell {
 
     CellButton getButton();
 
-    void drawToBoard(Pane pane);
+    void drawToBoard(GridPane pane);
 
     CellValue getValue();
 
@@ -31,4 +32,6 @@ public interface ICell {
     boolean isRevealed();
 
     void setRevealed(boolean revealed);
+
+    String getDisplayIcon();
 }

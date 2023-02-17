@@ -1,11 +1,15 @@
 package com.laggo.fauxsweeper;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-import java.lang.reflect.InvocationTargetException;
+public class FauxsweeperMain extends Application {
 
-public class FauxsweeperMain {
-    public static void main(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        FauxsweeperBoard<SquareCell> board = new FauxsweeperBoard<>(SquareCell.class, 10, 10, 10);
-        board.getCellAt(new BoardLocation(0, 0)).getConnectedMatching(c -> c.getValue() == CellValue.ZERO);
-        board.dumpBoard(true);
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        
     }
 }

@@ -1,5 +1,7 @@
 package com.laggo.fauxsweeper;
 
+import javafx.scene.layout.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Random;
@@ -13,6 +15,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private final GameState gameState = GameState.FIRST;
     private final Class<CellT> cellTRef;
     private final HashMap<BoardLocation, CellT> cells = new HashMap<>();
+    private final Pane gamePane = new VBox(new StackPane(), new GridPane());
 
     public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         this.cellTRef = cellTRef;
@@ -56,11 +59,23 @@ public class FauxsweeperBoard<CellT extends ICell> {
         }
     }
 
+    private void secretlyMoveMine(BoardLocation mineLoc) throws CloneNotSupportedException {
+        BoardLocation oldMineLoc = mineLoc.clone();
+
+        while (this.getCellAt(mineLoc).getValue() == CellValue.MINE) {
+            mineLoc = new BoardLocation(this.rand.nextInt(this.width), this.rand.nextInt(this.height));
+        }
+
+        this.getCellAt(mineLoc).setValue(CellValue.MINE);
+        this.getCellAt(oldMineLoc).setValue(CellValue.ZERO);  // will be recomputed
+        this.computeNumberedCells();
+    }
+
     public CellT getCellAt(BoardLocation loc) {
         return this.cells.get(loc);
     }
 
-    public String dumpBoard(boolean xRay) {
+    public String dump(boolean xRay) {
         StringBuilder builder = new StringBuilder();
         for (int x = 0; x < this.width; ++x) {
             for (int y = 0; y < this.height; y++) {
@@ -72,5 +87,16 @@ public class FauxsweeperBoard<CellT extends ICell> {
             builder.append("\n");
         }
         return builder.toString();
+    }
+
+    public void updateGamePane() {
+        this.updateUpperPane();
+        this.updateBoardPane();
+    }
+
+    private void updateUpperPane() {
+        Pane upperPane = (Pane) this.gamePane.getChildren().get(0);
+
+
     }
 }

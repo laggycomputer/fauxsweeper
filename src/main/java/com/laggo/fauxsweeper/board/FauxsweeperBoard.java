@@ -39,9 +39,9 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private final HashMap<BoardLocation, CellT> cells = new HashMap<>();
     private final IntegerProperty gameTime = new SimpleIntegerProperty(this, "gameTime", 0);
     private final boolean timerEnabled;
-    BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
     private final StackPane upperPane = new StackPane();
     private final Pane gamePane;
+    BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
     private GameState gameState = GameState.FIRST;
     private ICell clickedMine;
     private Timer timer = new Timer(true);
@@ -183,9 +183,12 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.computeNumberedCells();
         this.updateGamePane();
 
+        Pane boardPane = this.getAnyCell().getBoardPane();
+        this.gamePane.getChildren().set(1, boardPane);
+
         // we must reschedule otherwise the time will increment at a wonky point
         this.timer.cancel();
-        this.timer = new Timer(false);
+        this.timer = new Timer(true);
         this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -346,6 +349,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
     /**
      * Handle the mouse being pressed anywhere on the UI.
+     *
      * @param evt The {@link MouseEvent} in question.
      */
     public void handleMouseDown(MouseEvent evt) {
@@ -356,6 +360,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
     /**
      * Handle the mouse being released anywhere on the UI.
+     *
      * @param evt The {@link MouseEvent} in question.
      */
     public void handleMouseUp(MouseEvent evt) {

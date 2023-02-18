@@ -225,7 +225,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
         return builder.toString();
     }
 
-    public void updateGamePane() {
+    private void updateGamePane() {
         this.updateUpperPane();
         this.updateBoardPane();
     }

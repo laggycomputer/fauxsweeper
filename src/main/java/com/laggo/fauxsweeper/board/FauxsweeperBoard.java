@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class FauxsweeperBoard<CellT extends ICell> {
-    public static final double GUI_SCALE = 1.5d;
+    private final double guiScale;
     private final Font FONT;
     private final int width;
     private final int height;
@@ -42,7 +42,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private ICell clickedMine;
     private Timer timer = new Timer(true);
 
-    public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount, boolean timerEnabled, Long seed) {
+    public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount, boolean timerEnabled, Long seed, double guiScale) {
         this.cellTRef = cellTRef;
 
         this.width = width;
@@ -51,6 +51,8 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.timerEnabled = timerEnabled;
 
         this.rand = (seed == null) ? new Random() : new Random(seed);
+
+        this.guiScale = guiScale;
 
         this.fillWithEmptyCells();
         this.placeMines(this.mineCount);
@@ -78,7 +80,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
     public static FauxsweeperBoard<? extends ICell> fromConfiguration(Configuration config) {
         // TODO: different cell types
-        return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled(), config.usesSetSeed() ? config.getSetSeed() : null);
+        return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled(), config.usesSetSeed() ? config.getSetSeed() : null, config.getGuiScale());
     }
 
     private void onTimerTick() {
@@ -241,7 +243,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
                 break;
         }
 
-        Button faceButton = new Button("", new ImageView(new Image(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(faceButtonImage)), 16 * GUI_SCALE * 1.25, 16 * GUI_SCALE * 1.25, true, false)));
+        Button faceButton = new Button("", new ImageView(new Image(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(faceButtonImage)), 16 * this.guiScale * 1.25, 16 * this.guiScale * 1.25, true, false)));
         faceButton.setOnAction(this::newGame);
         StackPane.setAlignment(faceButton, Pos.CENTER);
 
@@ -271,6 +273,10 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public double getGuiScale() {
+        return this.guiScale;
     }
 
     public void handleMouseDown(MouseEvent evt) {

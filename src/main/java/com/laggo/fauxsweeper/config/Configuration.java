@@ -9,15 +9,16 @@ import java.io.IOException;
 
 public class Configuration {
     private static final Gson gson = new Gson().newBuilder().setPrettyPrinting().create();
-    private transient File file;
     private final int boardWidth;
     private final int boardHeight;
     private final int mineCount;
     private final boolean timerEnabled;
     private final boolean useSetSeed;
     private final long setSeed;
+    private final double guiScale;
+    private transient File file;
 
-    Configuration(File file, int boardWidth, int boardHeight, int mineCount, boolean timerEnabled, boolean useSetSeed, long setSeed) {
+    Configuration(File file, int boardWidth, int boardHeight, int mineCount, boolean timerEnabled, boolean useSetSeed, long setSeed, double guiScale) {
         this.file = file;
 
         this.boardWidth = boardWidth;
@@ -26,6 +27,7 @@ public class Configuration {
         this.timerEnabled = timerEnabled;
         this.useSetSeed = useSetSeed;
         this.setSeed = setSeed;
+        this.guiScale = guiScale;
     }
 
     public static Configuration fromFile(File file) {
@@ -51,11 +53,11 @@ public class Configuration {
     }
 
     public static Configuration defaultConfiguration(File file) {
-        return new Configuration(file, 10, 10, 10, true, false, 69420);
+        return new Configuration(file, 10, 10, 10, true, false, 69420, 1.5d);
     }
 
     public boolean isValid() {
-        return this.boardWidth > 0 && this.boardHeight > 0 && this.mineCount > 0 && this.mineCount <= this.boardWidth * this.boardHeight;
+        return this.boardWidth > 0 && this.boardHeight > 0 && this.mineCount > 0 && this.mineCount <= this.boardWidth * this.boardHeight && this.guiScale > 0;
     }
 
     public void syncToFile() {
@@ -89,6 +91,10 @@ public class Configuration {
 
     public long getSetSeed() {
         return this.setSeed;
+    }
+
+    public double getGuiScale() {
+        return this.guiScale;
     }
 
     public void setFile(File file) {

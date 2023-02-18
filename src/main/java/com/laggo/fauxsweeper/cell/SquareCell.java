@@ -25,14 +25,16 @@ public class SquareCell extends BaseCell {
             this.getBoard().handleBoardClick(evt);
         });
 
-        button.setMaxSize(16 * FauxsweeperBoard.GUI_SCALE, 16 * FauxsweeperBoard.GUI_SCALE);
-        button.setMinSize(16 * FauxsweeperBoard.GUI_SCALE, 16 * FauxsweeperBoard.GUI_SCALE);
+        final double guiScale = this.getBoard().getGuiScale();
+
+        button.setMaxSize(16 * guiScale, 16 * guiScale);
+        button.setMinSize(16 * guiScale, 16 * guiScale);
 
         String returnedResource = this.getDisplayIcon();
         if (returnedResource != null) {
             button.setGraphic(new ImageView(new Image(
                     Objects.requireNonNull(this.getClass().getResourceAsStream(returnedResource)),
-                    16 * FauxsweeperBoard.GUI_SCALE, 16 * FauxsweeperBoard.GUI_SCALE, true, false)));
+                    16 * guiScale, 16 * guiScale, true, false)));
         }
 
         return button;

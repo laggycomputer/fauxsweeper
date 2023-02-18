@@ -9,6 +9,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * The type Base cell.
+ */
 public abstract class BaseCell implements ICell {
     private final BoardLocation location;
     private final FauxsweeperBoard<? extends ICell> board;
@@ -18,6 +21,12 @@ public abstract class BaseCell implements ICell {
     private CellButton button;
     private Pane boardPane;
 
+    /**
+     * Instantiates a new Base cell.
+     *
+     * @param board    the board
+     * @param location the location
+     */
     public BaseCell(FauxsweeperBoard<? extends ICell> board, BoardLocation location) {
         this.board = board;
         this.location = location;
@@ -33,6 +42,12 @@ public abstract class BaseCell implements ICell {
         return this.board;
     }
 
+
+    /**
+     * Gets display icon.
+     *
+     * @return The icon which should be used for this cell. Can be {@code null} if this cell should have no icon.
+     */
     public String getDisplayIcon() {
         if (!this.revealed) {
             switch (this.getState()) {
@@ -63,8 +78,18 @@ public abstract class BaseCell implements ICell {
         return null;
     }
 
+    /**
+     * Create button cell button.
+     *
+     * @return The new {@link CellButton} which represents this cell.
+     */
     protected abstract CellButton createButton();
 
+    /**
+     * Sets attributes common to all cell buttons, regardless of which cell type.
+     *
+     * @param button The {@link CellButton} to alter.
+     */
     protected void addAttributes(CellButton button) {
         button.setCell(this);
         button.setFocusTraversable(false);
@@ -83,6 +108,11 @@ public abstract class BaseCell implements ICell {
         return this.button;
     }
 
+    /**
+     * Create board pane pane.
+     *
+     * @return The {@link Pane} which should be used to represent the board for this cell's {@code cell}.
+     */
     protected abstract Pane createBoardPane();
 
     @Override
@@ -93,6 +123,11 @@ public abstract class BaseCell implements ICell {
         return this.boardPane;
     }
 
+    /**
+     * Sets the pane this cell's UI element is on.
+     *
+     * @param boardPane The pane to set.
+     */
     protected void setBoardPane(Pane boardPane) {
         this.boardPane = boardPane;
     }
@@ -120,6 +155,14 @@ public abstract class BaseCell implements ICell {
         return foundSoFar.keySet();
     }
 
+    /**
+     * The recursive step for the flood fill required by {@code getConnectedMatching}.
+     *
+     * @param startingCell The {@link ICell} to base this fill on.
+     * @param soFar The {@link HashMap} of cells already traversed. A missing key means the cell has not been traversed, the value {@code false} means a cell has been processed but its neighbors have not, and the value {@code true} means a cell has been traversed fully.
+     * @param pred The predicate which all cells must match in order for the flood fill to recurse over them.
+     * @param includeNeighbors Whether to include every neighbor of a cell returned by the flood fill.
+     */
     private void recursiveConnectedMatching(ICell startingCell, HashMap<ICell, Boolean> soFar, Predicate<ICell> pred, boolean includeNeighbors) {
         if (soFar.containsKey(startingCell)) {
             return;

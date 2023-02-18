@@ -151,7 +151,12 @@ public abstract class BaseCell implements ICell {
     }
 
     @Override
-    public ClickResult onLeftClick(boolean propagate) {
+    public void reveal() {
+        this.revealed = true;
+    }
+
+    @Override
+    public ClickResult onLeftClick() {
         if (this.getBoard().isGameOver()) {
             return ClickResult.INVALID;
         }
@@ -173,12 +178,10 @@ public abstract class BaseCell implements ICell {
             return ClickResult.OK;
         }
 
+        this.reveal();
         // we are clicking a zero cell
-        this.revealed = true;
-        if (propagate) {
-            for (ICell connectedCell : this.getConnectedMatching(c -> c.getValue() == CellValue.ZERO, true)) {
-                connectedCell.onLeftClick(false);
-            }
+        for (ICell connectedCell : this.getConnectedMatching(c -> c.getValue() == CellValue.ZERO, true)) {
+            connectedCell.reveal();
         }
 
         return ClickResult.OK;

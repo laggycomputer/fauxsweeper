@@ -32,7 +32,9 @@ public interface ICell {
 
     boolean isRevealed();
 
-    ClickResult onLeftClick(boolean propagate);
+    void reveal();
+
+    ClickResult onLeftClick();
 
     void onRightClick(MouseEvent evt);
 }

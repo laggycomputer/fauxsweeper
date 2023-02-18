@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class BaseCell implements ICell {
-    private final BoardLocation loc;
+    private final BoardLocation location;
     private final FauxsweeperBoard<? extends BaseCell> board;
     private CellValue value = CellValue.ZERO;
     private CellState state = CellState.NO_FLAG;
@@ -18,14 +18,14 @@ public abstract class BaseCell implements ICell {
     private CellButton button;
     private Pane boardPane;
 
-    public BaseCell(FauxsweeperBoard<? extends BaseCell> board, BoardLocation loc) {
+    public BaseCell(FauxsweeperBoard<? extends BaseCell> board, BoardLocation location) {
         this.board = board;
-        this.loc = loc;
+        this.location = location;
     }
 
     @Override
     public BoardLocation getLocation() {
-        return this.loc;
+        return this.location;
     }
 
     @Override

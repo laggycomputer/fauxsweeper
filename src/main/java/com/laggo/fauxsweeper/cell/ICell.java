@@ -26,7 +26,7 @@ public interface ICell {
 
     Set<? extends ICell> getNeighbors();
 
-    Set<? extends ICell> getConnectedMatching(Predicate<ICell> pred);
+    Set<? extends ICell> getConnectedMatching(Predicate<ICell> pred, boolean includeNeighbors);
 
     boolean equals(Object other);
 

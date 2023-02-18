@@ -113,22 +113,22 @@ public abstract class BaseCell implements ICell {
     }
 
     @Override
-    public Set<? extends ICell> getConnectedMatching(Predicate<ICell> pred) {
+    public Set<? extends ICell> getConnectedMatching(Predicate<ICell> pred, boolean includeNeighbors) {
         HashMap<ICell, Boolean> foundSoFar = new HashMap<>();
-        this.recursiveConnectedMatching(this, foundSoFar, pred);
+        this.recursiveConnectedMatching(this, foundSoFar, pred, includeNeighbors);
         // this is technically linked to the hashset, but it'll be destroyed anyway so who cares
         return foundSoFar.keySet();
     }
 
-    private void recursiveConnectedMatching(ICell startingCell, HashMap<ICell, Boolean> soFar, Predicate<ICell> pred) {
+    private void recursiveConnectedMatching(ICell startingCell, HashMap<ICell, Boolean> soFar, Predicate<ICell> pred, boolean includeNeighbors) {
         if (soFar.containsKey(startingCell)) {
             return;
         }
         soFar.put(startingCell, false);
         for (ICell neighbor : startingCell.getNeighbors()) {
             if (pred.test(neighbor)) {
-                this.recursiveConnectedMatching(neighbor, soFar, pred);
-            } else {
+                this.recursiveConnectedMatching(neighbor, soFar, pred, includeNeighbors);
+            } else if (includeNeighbors) {
                 // add it anyway but don't recurse
                 soFar.put(neighbor, true);
             }
@@ -175,7 +175,7 @@ public abstract class BaseCell implements ICell {
 
         // we are clicking a zero cell
         if (propagate) {
-            for (ICell connectedCell : this.getConnectedMatching(c -> c.getValue() == CellValue.ZERO)) {
+            for (ICell connectedCell : this.getConnectedMatching(c -> c.getValue() == CellValue.ZERO, true)) {
                 connectedCell.onLeftClick(false);
             }
         }

@@ -4,6 +4,7 @@ import com.laggo.fauxsweeper.board.FauxsweeperBoard;
 import javafx.scene.input.MouseEvent;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -153,6 +154,13 @@ public abstract class BaseCell implements ICell {
     }
 
     public void onRightClick(MouseEvent evt) {
+        ICell cellTarget = Objects.requireNonNull(((CellButton) evt.getTarget()).getCell());
+        if (cellTarget.isRevealed()) {
+            return;
+        }
+        if (cellTarget.getBoard().isGameOver()) {
+            return;
+        }
         this.state = CellState.values()[(this.getState().ordinal() + 3 + (evt.isShiftDown() ? -1 : 1)) % 3];
     }
 }

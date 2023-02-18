@@ -11,14 +11,14 @@ import java.util.function.Predicate;
 
 public abstract class BaseCell implements ICell {
     private final BoardLocation location;
-    private final FauxsweeperBoard<? extends BaseCell> board;
+    private final FauxsweeperBoard<? extends ICell> board;
     private CellValue value = CellValue.ZERO;
     private CellState state = CellState.NO_FLAG;
     private boolean revealed = false;
     private CellButton button;
     private Pane boardPane;
 
-    public BaseCell(FauxsweeperBoard<? extends BaseCell> board, BoardLocation location) {
+    public BaseCell(FauxsweeperBoard<? extends ICell> board, BoardLocation location) {
         this.board = board;
         this.location = location;
     }
@@ -29,7 +29,7 @@ public abstract class BaseCell implements ICell {
     }
 
     @Override
-    public FauxsweeperBoard<? extends BaseCell> getBoard() {
+    public FauxsweeperBoard<? extends ICell> getBoard() {
         return this.board;
     }
 
@@ -139,12 +139,10 @@ public abstract class BaseCell implements ICell {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BaseCell)) return false;
+        if (!(o instanceof ICell)) return false;
 
-        BaseCell baseCell = (BaseCell) o;
-
-        if (!location.equals(baseCell.location)) return false;
-        return board.equals(baseCell.board);
+        if (this.location != ((ICell) o).getLocation()) return false;
+        return this.board == ((ICell) o).getBoard();
     }
 
     @Override

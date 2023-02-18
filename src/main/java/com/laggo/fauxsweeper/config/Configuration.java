@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Configuration {
     private static final Gson gson = new Gson().newBuilder().setPrettyPrinting().create();
-    private File file;
+    private transient File file;
     private final int boardWidth;
     private final int boardHeight;
     private final int mineCount;

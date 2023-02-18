@@ -19,8 +19,7 @@ public class FauxsweeperMain extends Application {
         Configuration configuration = Configuration.fromFile(new File("config.json"));
 
         FauxsweeperBoard<? extends ICell> board = FauxsweeperBoard.fromConfiguration(configuration);
-
-        configuration.toFile(new File("config.json"));
+        configuration.syncToFile();
 
         primaryStage.setTitle("Fauxsweeper");
         primaryStage.setScene(new Scene(board.getGamePane()));

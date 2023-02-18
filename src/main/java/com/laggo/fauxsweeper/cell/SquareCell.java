@@ -4,6 +4,7 @@ import com.laggo.fauxsweeper.board.FauxsweeperBoard;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,24 +16,21 @@ public class SquareCell extends BaseCell {
     }
 
     @Override
-    public void updateButton() {
+    protected CellButton createButton() {
         final double guiScale = this.getBoard().getGuiScale();
 
-        if (this.getButton() == null) {
-            CellButton button = new CellButton();
-            button.setCell(this);
-            button.setFocusTraversable(false);
-            button.setOnMousePressed(this.getBoard()::handleMouseDown);
-            button.setOnMouseReleased(evt -> {
-                this.getBoard().handleMouseUp(evt);
-                this.getBoard().handleBoardClick(evt);
-            });
+        CellButton button = new CellButton();
+        this.addAttributes(button);
 
-            button.setMaxSize(16 * guiScale, 16 * guiScale);
-            button.setMinSize(16 * guiScale, 16 * guiScale);
+        button.setMaxSize(16 * guiScale, 16 * guiScale);
+        button.setMinSize(16 * guiScale, 16 * guiScale);
 
-            this.setButton(button);
-        }
+        return button;
+    }
+
+    @Override
+    public void updateButton() {
+        final double guiScale = this.getBoard().getGuiScale();
 
         String returnedResource = this.getDisplayIcon();
         if (returnedResource != null) {
@@ -42,8 +40,7 @@ public class SquareCell extends BaseCell {
         }
     }
 
-    @Override
-    public void createBoardPane() {
+    protected Pane createBoardPane() {
         // if this gets called a second time, whatever
         GridPane boardPane = new GridPane();
         this.setBoardPane(boardPane);
@@ -54,7 +51,7 @@ public class SquareCell extends BaseCell {
                 boardPane.add(cellHere.getButton(), x, y);
             }
         }
-        this.setBoardPane(boardPane);
+        return boardPane;
     }
 
     @Override

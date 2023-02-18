@@ -12,13 +12,9 @@ public interface ICell {
 
     FauxsweeperBoard<? extends ICell> getBoard();
 
-    String getDisplayIcon();
-
     void updateButton();
 
     CellButton getButton();
-
-    void createBoardPane();
 
     Pane getBoardPane();
 
@@ -36,9 +32,7 @@ public interface ICell {
 
     boolean isRevealed();
 
-    void setRevealed(boolean revealed);
-
-    ClickResult onLeftClick();
+    ClickResult onLeftClick(boolean propagate);
 
     void onRightClick(MouseEvent evt);
 }

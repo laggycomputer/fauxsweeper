@@ -33,7 +33,6 @@ public abstract class BaseCell implements ICell {
         return this.board;
     }
 
-    @Override
     public String getDisplayIcon() {
         if (!this.revealed) {
             switch (this.getState()) {
@@ -64,17 +63,33 @@ public abstract class BaseCell implements ICell {
         return null;
     }
 
+    protected abstract CellButton createButton();
+
+    protected void addAttributes(CellButton button) {
+        button.setCell(this);
+        button.setFocusTraversable(false);
+        button.setOnMousePressed(this.getBoard()::handleMouseDown);
+        button.setOnMouseReleased(evt -> {
+            this.getBoard().handleMouseUp(evt);
+            this.getBoard().handleBoardClick(evt);
+        });
+    }
+
     @Override
     public CellButton getButton() {
+        if (this.button == null) {
+            this.button = this.createButton();
+        }
         return this.button;
     }
 
-    protected void setButton(CellButton button) {
-        this.button = button;
-    }
+    protected abstract Pane createBoardPane();
 
     @Override
     public Pane getBoardPane() {
+        if (this.boardPane == null) {
+            this.boardPane = this.createBoardPane();
+        }
         return this.boardPane;
     }
 
@@ -128,7 +143,7 @@ public abstract class BaseCell implements ICell {
 
         BaseCell baseCell = (BaseCell) o;
 
-        if (!loc.equals(baseCell.loc)) return false;
+        if (!location.equals(baseCell.location)) return false;
         return board.equals(baseCell.board);
     }
 
@@ -138,12 +153,7 @@ public abstract class BaseCell implements ICell {
     }
 
     @Override
-    public void setRevealed(boolean revealed) {
-        this.revealed = revealed;
-    }
-
-    @Override
-    public ClickResult onLeftClick() {
+    public ClickResult onLeftClick(boolean propagate) {
         if (this.getBoard().isGameOver()) {
             return ClickResult.INVALID;
         }
@@ -166,9 +176,10 @@ public abstract class BaseCell implements ICell {
         }
 
         // we are clicking a zero cell
-        this.revealed = true;
-        for (ICell connectedCell : this.getConnectedMatching(c -> c.getValue() == CellValue.ZERO)) {
-            connectedCell.setRevealed(true);
+        if (propagate) {
+            for (ICell connectedCell : this.getConnectedMatching(c -> c.getValue() == CellValue.ZERO)) {
+                connectedCell.onLeftClick(false);
+            }
         }
 
         return ClickResult.OK;

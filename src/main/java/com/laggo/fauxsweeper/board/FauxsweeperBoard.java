@@ -61,7 +61,6 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.isMouseDown.addListener(evt -> this.updateUpperPane());
         this.gameTime.addListener(evt -> this.updateUpperPane());
 
-        this.getAnyCell().createBoardPane();
         Pane boardPane = this.getAnyCell().getBoardPane();
         this.gamePane = new VBox(this.upperPane, boardPane);
 
@@ -179,12 +178,12 @@ public class FauxsweeperBoard<CellT extends ICell> {
     public void handleBoardClick(MouseEvent evt) {
         if (evt.getTarget() instanceof CellButton) {
             if (evt.getButton() == MouseButton.PRIMARY) {
-                ClickResult result = Objects.requireNonNull(((CellButton) evt.getTarget()).getCell()).onLeftClick();
+                ClickResult result = Objects.requireNonNull(((CellButton) evt.getTarget()).getCell()).onLeftClick(true);
                 if (result == ClickResult.FAIL) {
                     if (this.gameState == GameState.FIRST) {
                         this.gameState = GameState.IN_PROGRESS;
                         this.secretlyMoveMine(((CellButton) evt.getTarget()).getCell().getLocation());
-                        ((CellButton) evt.getTarget()).getCell().onLeftClick();
+                        ((CellButton) evt.getTarget()).getCell().onLeftClick(true);
                     } else {
                         this.gameState = GameState.LOST;
                         this.clickedMine = ((CellButton) evt.getTarget()).getCell();
@@ -207,7 +206,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
     private void revealAll() {
         for (CellT cell : this.cells.values()) {
-            cell.setRevealed(true);
+            cell.onLeftClick(false);
         }
     }
 

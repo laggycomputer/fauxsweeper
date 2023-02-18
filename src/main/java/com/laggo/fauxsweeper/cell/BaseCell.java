@@ -174,6 +174,7 @@ public abstract class BaseCell implements ICell {
         }
 
         // we are clicking a zero cell
+        this.revealed = true;
         if (propagate) {
             for (ICell connectedCell : this.getConnectedMatching(c -> c.getValue() == CellValue.ZERO, true)) {
                 connectedCell.onLeftClick(false);

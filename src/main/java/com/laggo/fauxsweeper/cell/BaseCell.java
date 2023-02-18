@@ -2,6 +2,7 @@ package com.laggo.fauxsweeper.cell;
 
 import com.laggo.fauxsweeper.board.FauxsweeperBoard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -14,10 +15,32 @@ public abstract class BaseCell implements ICell {
     private CellValue value = CellValue.ZERO;
     private CellState state = CellState.NO_FLAG;
     private boolean revealed = false;
+    private CellButton button;
+    private Pane boardPane;
 
     public BaseCell(FauxsweeperBoard<? extends BaseCell> board, BoardLocation loc) {
         this.board = board;
         this.loc = loc;
+    }
+
+    abstract public void createBoardPane();
+
+    @Override
+    public CellButton getButton() {
+        return this.button;
+    }
+
+    protected void setButton(CellButton button) {
+        this.button = button;
+    }
+
+    @Override
+    public Pane getBoardPane() {
+        return this.boardPane;
+    }
+
+    protected void setBoardPane(Pane boardPane) {
+        this.boardPane = boardPane;
     }
 
     @Override

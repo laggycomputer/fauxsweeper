@@ -15,7 +15,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -38,8 +37,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private final boolean timerEnabled;
     BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
     private final StackPane upperPane = new StackPane();
-    private final GridPane boardPane = new GridPane();
-    private final Pane gamePane = new VBox(upperPane, boardPane);
+    private final Pane gamePane;
     private GameState gameState = GameState.FIRST;
     private ICell clickedMine;
     private Timer timer = new Timer(true);
@@ -62,6 +60,10 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
         this.isMouseDown.addListener(evt -> this.updateUpperPane());
         this.gameTime.addListener(evt -> this.updateUpperPane());
+
+        this.getAnyCell().createBoardPane();
+        Pane boardPane = this.getAnyCell().getBoardPane();
+        this.gamePane = new VBox(this.upperPane, boardPane);
 
         this.updateGamePane();
 
@@ -116,6 +118,10 @@ public class FauxsweeperBoard<CellT extends ICell> {
                 count--;
             }
         }
+    }
+
+    private CellT getAnyCell() {
+        return this.cells.values().stream().findAny().orElse(null);
     }
 
     private void computeNumberedCells() {
@@ -260,7 +266,9 @@ public class FauxsweeperBoard<CellT extends ICell> {
 
     private void updateBoardPane() {
         // button shape and layout is not the same across all cells so let the type param handle this
-        this.getCellAt(new BoardLocation(0, 0)).drawToBoard(this.boardPane);
+        for (CellT cell : this.cells.values()) {
+            cell.updateButton();
+        }
     }
 
     public Pane getGamePane() {

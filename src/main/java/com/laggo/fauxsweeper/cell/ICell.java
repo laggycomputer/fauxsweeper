@@ -2,7 +2,7 @@ package com.laggo.fauxsweeper.cell;
 
 import com.laggo.fauxsweeper.board.FauxsweeperBoard;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 
 import java.util.Set;
 import java.util.function.Predicate;
@@ -14,7 +14,11 @@ public interface ICell {
 
     CellButton getButton();
 
-    void drawToBoard(GridPane pane);
+    void updateButton();
+
+    Pane getBoardPane();
+
+    void createBoardPane();
 
     CellValue getValue();
 

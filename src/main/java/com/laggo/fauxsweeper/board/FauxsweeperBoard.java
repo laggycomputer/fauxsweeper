@@ -7,7 +7,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -145,7 +144,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
         return this.clickedMine;
     }
 
-    public void newGame(ActionEvent evt) {
+    public void newGame() {
         this.cells.clear();
         this.clickedMine = null;
         this.gameState = GameState.FIRST;
@@ -250,7 +249,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
         }
 
         Button faceButton = new Button("", new ImageView(new Image(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(faceButtonImage)), 16 * this.guiScale * 1.25, 16 * this.guiScale * 1.25, true, false)));
-        faceButton.setOnAction(this::newGame);
+        faceButton.setOnAction((event) -> this.newGame());
         StackPane.setAlignment(faceButton, Pos.CENTER);
 
         Text textTimer = new Text(String.format("%03d", Math.min(999, gameTime.get())));

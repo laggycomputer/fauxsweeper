@@ -23,6 +23,7 @@ public class FauxsweeperMain extends Application {
 
         primaryStage.setTitle("Fauxsweeper");
         primaryStage.setScene(new Scene(board.getGamePane()));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 }

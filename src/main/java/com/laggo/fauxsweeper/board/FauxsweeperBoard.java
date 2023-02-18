@@ -34,10 +34,12 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private final Random rand;
     private final Class<CellT> cellTRef;
     private final HashMap<BoardLocation, CellT> cells = new HashMap<>();
-    private final Pane gamePane = new VBox(new StackPane(), new GridPane());
     private final IntegerProperty gameTime = new SimpleIntegerProperty(this, "gameTime", 0);
     private final boolean timerEnabled;
     BooleanProperty isMouseDown = new SimpleBooleanProperty(this, "isMouseDown", false);
+    private final StackPane upperPane = new StackPane();
+    private final GridPane boardPane = new GridPane();
+    private final Pane gamePane = new VBox(upperPane, boardPane);
     private GameState gameState = GameState.FIRST;
     private ICell clickedMine;
     private Timer timer = new Timer(true);
@@ -222,8 +224,6 @@ public class FauxsweeperBoard<CellT extends ICell> {
     }
 
     private void updateUpperPane() {
-        StackPane upperPane = (StackPane) this.gamePane.getChildren().get(0);
-
         int minesLeft = (int) (this.mineCount - this.cells.values().stream().filter(c -> c.getState() != CellState.NO_FLAG).count());
 
         Text textMinesLeft = new Text(String.format("%03d", minesLeft));
@@ -251,16 +251,16 @@ public class FauxsweeperBoard<CellT extends ICell> {
         textTimer.setFont(FONT);
         StackPane.setAlignment(textTimer, Pos.CENTER_RIGHT);
 
-        upperPane.getChildren().clear();
-        upperPane.getChildren().addAll(textMinesLeft, faceButton);
+        this.upperPane.getChildren().clear();
+        this.upperPane.getChildren().addAll(textMinesLeft, faceButton);
         if (this.timerEnabled) {
-            upperPane.getChildren().add(textTimer);
+            this.upperPane.getChildren().add(textTimer);
         }
     }
 
     private void updateBoardPane() {
         // button shape and layout is not the same across all cells so let the type param handle this
-        this.getCellAt(new BoardLocation(0, 0)).drawToBoard((GridPane) this.gamePane.getChildren().get(1));
+        this.getCellAt(new BoardLocation(0, 0)).drawToBoard(this.boardPane);
     }
 
     public Pane getGamePane() {

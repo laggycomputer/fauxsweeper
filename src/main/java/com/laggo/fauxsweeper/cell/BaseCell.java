@@ -23,7 +23,46 @@ public abstract class BaseCell implements ICell {
         this.loc = loc;
     }
 
-    abstract public void createBoardPane();
+    @Override
+    public BoardLocation getLocation() {
+        return this.loc;
+    }
+
+    @Override
+    public FauxsweeperBoard<? extends BaseCell> getBoard() {
+        return this.board;
+    }
+
+    @Override
+    public String getDisplayIcon() {
+        if (!this.revealed) {
+            switch (this.getState()) {
+                case NO_FLAG:
+                    return "/question.png";
+                case FLAG:
+                    return "/flag.png";
+                case FLAG_POTENTIAL:
+                    return "/flag-potential.png";
+            }
+        } else {
+            if (this.getState() != CellState.NO_FLAG && this.getValue() != CellValue.MINE) {
+                // then the game has ended
+                return "/misflagged.png";
+            }
+
+            if (this.getValue() == CellValue.MINE) {
+                return (this.getBoard().getClickedMine() == this) ? "/mine-death.png" : "/mine-ceil.png";
+            }
+
+            if (this.getValue() == CellValue.ZERO) {
+                return null;
+            }
+
+            return "/open" + this.getValue().ordinal() + ".png";
+        }
+        // technically unreachable
+        return null;
+    }
 
     @Override
     public CellButton getButton() {
@@ -41,16 +80,6 @@ public abstract class BaseCell implements ICell {
 
     protected void setBoardPane(Pane boardPane) {
         this.boardPane = boardPane;
-    }
-
-    @Override
-    public BoardLocation getLocation() {
-        return this.loc;
-    }
-
-    @Override
-    public FauxsweeperBoard<? extends BaseCell> getBoard() {
-        return this.board;
     }
 
     @Override
@@ -111,37 +140,6 @@ public abstract class BaseCell implements ICell {
     @Override
     public void setRevealed(boolean revealed) {
         this.revealed = revealed;
-    }
-
-    @Override
-    public String getDisplayIcon() {
-        if (!this.revealed) {
-            switch (this.getState()) {
-                case NO_FLAG:
-                    return "/question.png";
-                case FLAG:
-                    return "/flag.png";
-                case FLAG_POTENTIAL:
-                    return "/flag-potential.png";
-            }
-        } else {
-            if (this.getState() != CellState.NO_FLAG && this.getValue() != CellValue.MINE) {
-                // then the game has ended
-                return "/misflagged.png";
-            }
-
-            if (this.getValue() == CellValue.MINE) {
-                return (this.getBoard().getClickedMine() == this) ? "/mine-death.png" : "/mine-ceil.png";
-            }
-
-            if (this.getValue() == CellValue.ZERO) {
-                return null;
-            }
-
-            return "/open" + this.getValue().ordinal() + ".png";
-        }
-        // technically unreachable
-        return null;
     }
 
     @Override

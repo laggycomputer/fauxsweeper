@@ -157,6 +157,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.computeNumberedCells();
         this.updateGamePane();
 
+        // we must reschedule otherwise the time will increment at a wonky point
         this.timer.cancel();
         this.timer = new Timer(false);
         this.timer.scheduleAtFixedRate(new TimerTask() {

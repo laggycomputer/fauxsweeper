@@ -23,6 +23,11 @@ import javafx.scene.text.Text;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A complete board of Fauxsweeper, with UI and other state.
+ *
+ * @param <CellT> The type of {@link ICell} this board uses.
+ */
 public class FauxsweeperBoard<CellT extends ICell> {
     private final double guiScale;
     private final Font FONT;
@@ -41,6 +46,17 @@ public class FauxsweeperBoard<CellT extends ICell> {
     private ICell clickedMine;
     private Timer timer = new Timer(true);
 
+    /**
+     * Instantiates a new Fauxsweeper board.
+     *
+     * @param cellTRef     Another reference to the type of cell being used. This is necessary for reflection.
+     * @param width        The width of the board.
+     * @param height       The height of the board.
+     * @param mineCount    The number of mines on the board.
+     * @param timerEnabled Whether to update the in-game timer.
+     * @param seed         The seed to use for RNG, if any.
+     * @param guiScale     The scale for the GUI.
+     */
     public FauxsweeperBoard(Class<CellT> cellTRef, int width, int height, int mineCount, boolean timerEnabled, Long seed, double guiScale) {
         this.cellTRef = cellTRef;
 
@@ -80,6 +96,12 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.FONT = Font.loadFont(Objects.requireNonNull(FauxsweeperBoard.class.getResourceAsStream("/Minecraftia-Regular.ttf")), -1);
     }
 
+    /**
+     * Create a board from a {@link Configuration}.
+     *
+     * @param config The configuration to use.
+     * @return A new board object.
+     */
     public static FauxsweeperBoard<? extends ICell> fromConfiguration(Configuration config) {
         // TODO: different cell types
         return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled(), config.usesSetSeed() ? config.getSetSeed() : null, config.getGuiScale());
@@ -140,10 +162,16 @@ public class FauxsweeperBoard<CellT extends ICell> {
         this.computeNumberedCells();
     }
 
+    /**
+     * @return The mine which was responsible for ending the game.
+     */
     public ICell getClickedMine() {
         return this.clickedMine;
     }
 
+    /**
+     * Wipes the state of the board to start a new game.
+     */
     public void newGame() {
         this.cells.clear();
         this.clickedMine = null;
@@ -166,14 +194,28 @@ public class FauxsweeperBoard<CellT extends ICell> {
         }, 1000, 1000);
     }
 
+    /**
+     * Gets the cell at a certain {@link BoardLocation}.
+     *
+     * @param loc The location to find a cell at.
+     * @return The found cell.
+     */
     public CellT getCellAt(BoardLocation loc) {
         return this.cells.get(loc);
     }
 
+    /**
+     * @return Whether the game has ended for any reason.
+     */
     public boolean isGameOver() {
         return this.gameState == GameState.WON || this.gameState == GameState.LOST;
     }
 
+    /**
+     * Handle a click somewhere on the board.
+     *
+     * @param evt The {@link MouseEvent} in question.
+     */
     public void handleBoardClick(MouseEvent evt) {
         if (evt.getTarget() instanceof CellButton) {
             if (evt.getButton() == MouseButton.PRIMARY) {
@@ -209,6 +251,10 @@ public class FauxsweeperBoard<CellT extends ICell> {
         }
     }
 
+    /**
+     * @param xRay Whether to ignore the state of the game and forcibly show the state of every cell.
+     * @return The board state as an ASCII table.
+     */
     public String dump(boolean xRay) {
         StringBuilder builder = new StringBuilder();
         for (int x = 0; x < this.width; ++x) {
@@ -270,28 +316,48 @@ public class FauxsweeperBoard<CellT extends ICell> {
         }
     }
 
+    /**
+     * @return The UI {@link Pane} for this board.
+     */
     public Pane getGamePane() {
         return this.gamePane;
     }
 
+    /**
+     * @return The width of this board.
+     */
     public int getWidth() {
         return this.width;
     }
 
+    /**
+     * @return The height of this board.
+     */
     public int getHeight() {
         return this.height;
     }
 
+    /**
+     * @return The GUI scaling factor of this board.
+     */
     public double getGuiScale() {
         return this.guiScale;
     }
 
+    /**
+     * Handle the mouse being pressed anywhere on the UI.
+     * @param evt The {@link MouseEvent} in question.
+     */
     public void handleMouseDown(MouseEvent evt) {
         if (evt.isPrimaryButtonDown()) {
             this.isMouseDown.set(true);
         }
     }
 
+    /**
+     * Handle the mouse being released anywhere on the UI.
+     * @param evt The {@link MouseEvent} in question.
+     */
     public void handleMouseUp(MouseEvent evt) {
         if (!evt.isPrimaryButtonDown()) {
             this.isMouseDown.set(false);

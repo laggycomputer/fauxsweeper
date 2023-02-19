@@ -109,7 +109,8 @@ public abstract class BaseCell implements ICell {
     }
 
     /**
-     * Create board pane pane.
+     * Create the board pane for a board with this cell type.
+     * Any implementation should also call {@link #setBoardPane(Pane)} with the resulting pane.
      *
      * @return The {@link Pane} which should be used to represent the board for this cell's {@code cell}.
      */

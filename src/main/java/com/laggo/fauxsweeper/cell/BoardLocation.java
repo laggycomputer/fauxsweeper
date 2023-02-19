@@ -40,4 +40,12 @@ public class BoardLocation implements Cloneable {
         result = 31 * result + y;
         return result;
     }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
 }

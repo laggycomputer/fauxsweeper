@@ -44,12 +44,10 @@ public class SquareCell extends BaseCell {
         // if this gets called a second time, whatever
         GridPane boardPane = new GridPane();
         this.setBoardPane(boardPane);
-        for (int x = 0; x < this.getBoard().getWidth(); ++x) {
-            for (int y = 0; y < this.getBoard().getHeight(); ++y) {
-                ICell cellHere = this.getBoard().getCellAt(new BoardLocation(x, y));
-                cellHere.updateButton();
-                boardPane.add(cellHere.getButton(), x, y);
-            }
+
+        for (ICell cell : this.getBoard().getAllCells()) {
+            cell.updateButton();
+            boardPane.add(cell.getButton(), cell.getLocation().getX(), cell.getLocation().getY());
         }
         return boardPane;
     }

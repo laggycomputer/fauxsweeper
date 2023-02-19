@@ -144,6 +144,10 @@ public class FauxsweeperBoard<CellT extends ICell> {
         return this.cells.values().stream().findAny().orElse(null);
     }
 
+    public Set<CellT> getAllCells() {
+        return new HashSet<>(this.cells.values());
+    }
+
     private void computeNumberedCells() {
         for (CellT cell : this.cells.values().stream().filter(c -> c.getValue() != CellValue.MINE).collect(Collectors.toSet())) {
             cell.setValue(CellValue.values()[(int) cell.getNeighbors().stream().filter(n -> n.getValue() == CellValue.MINE).count()]);

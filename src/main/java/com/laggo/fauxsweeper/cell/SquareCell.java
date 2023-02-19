@@ -43,7 +43,6 @@ public class SquareCell extends BaseCell {
     protected Pane createBoardPane() {
         // if this gets called a second time, whatever
         GridPane boardPane = new GridPane();
-        this.setBoardPane(boardPane);
 
         for (ICell cell : this.getBoard().getAllCells()) {
             cell.updateButton();

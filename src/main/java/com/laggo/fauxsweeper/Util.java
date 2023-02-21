@@ -19,7 +19,7 @@ public class Util {
         final double angleStep = Math.PI * 2 / sides;
         double angle = angleOffset;
         for (int i = 0; i < sides; ++i, angle += angleStep) {
-            polygon.getPoints().addAll(Math.sin(angle) * radius + center.getX(), Math.cos(angle) * radius + center.getY());
+            polygon.getPoints().addAll(Math.cos(angle) * radius + center.getX(), Math.sin(angle) * radius + center.getY());
         }
     }
 }

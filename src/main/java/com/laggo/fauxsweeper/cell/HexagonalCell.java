@@ -21,7 +21,7 @@ public class HexagonalCell extends BaseCell {
 
     private Point2D getCenterCoords() {
         final double guiScale = this.getBoard().getGuiScale();
-        final double sideLength = guiScale * 16;
+        final double sideLength = guiScale * 8;
 
         double xOffset =
                 // offset for the entire row
@@ -38,20 +38,21 @@ public class HexagonalCell extends BaseCell {
     @Override
     protected CellButton createButton() {
         final double guiScale = this.getBoard().getGuiScale();
+        final double sideLength = guiScale * 8;
 
         CellButton button = new CellButton();
         this.addAttributes(button);
 
-        button.setMaxSize(16 * guiScale, 16 * guiScale);
-        button.setMinSize(16 * guiScale, 16 * guiScale);
+        button.setMaxSize(sideLength * 2, sideLength * 2);
+        button.setMinSize(sideLength * 2, sideLength * 2);
 
         Polygon hex = new Polygon();
         Point2D centerCoords = this.getCenterCoords();
-        Util.setPolygonSides(hex, centerCoords.getX(), centerCoords.getY(), guiScale * 16, 6);
+        Util.setPolygonSides(hex, centerCoords.getX(), centerCoords.getY(), sideLength, 6);
         button.setShape(hex);
         // use correct bounding box
         button.setPickOnBounds(false);
-        button.relocate(centerCoords.getX(), centerCoords.getY());
+        button.relocate(centerCoords.getX() - sideLength * Math.sqrt(3) / 2, centerCoords.getY() - sideLength);
 
         return button;
     }

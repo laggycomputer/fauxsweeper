@@ -104,7 +104,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
      */
     public static FauxsweeperBoard<? extends ICell> fromConfiguration(Configuration config) {
         // TODO: different cell types
-        return new FauxsweeperBoard<>(SquareCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled(), config.usesSetSeed() ? config.getSetSeed() : null, config.getGuiScale());
+        return new FauxsweeperBoard<>(HexagonalCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled(), config.usesSetSeed() ? config.getSetSeed() : null, config.getGuiScale());
     }
 
     private void onTimerTick() {
@@ -328,20 +328,6 @@ public class FauxsweeperBoard<CellT extends ICell> {
      */
     public Pane getGamePane() {
         return this.gamePane;
-    }
-
-    /**
-     * @return The width of this board.
-     */
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * @return The height of this board.
-     */
-    public int getHeight() {
-        return this.height;
     }
 
     /**

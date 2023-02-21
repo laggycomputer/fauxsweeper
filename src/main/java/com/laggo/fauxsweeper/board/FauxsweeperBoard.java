@@ -107,6 +107,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
     }
 
     private void onTimerTick() {
+        // this has to run on the javafx thread because setting the property also calls the listener to update the GUI
         Platform.runLater(() -> {
             if (!this.isGameOver()) {
                 this.gameTime.set(this.gameTime.get() + 1);

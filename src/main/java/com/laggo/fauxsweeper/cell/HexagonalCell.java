@@ -48,7 +48,7 @@ public class HexagonalCell extends BaseCell {
 
         Polygon hex = new Polygon();
         Point2D centerCoords = this.getCenterCoords();
-        Util.setPolygonSides(hex, centerCoords.getX(), centerCoords.getY(), sideLength, 6);
+        Util.setPolygonSides(hex, centerCoords, sideLength, 6, 0);
         button.setShape(hex);
         // use correct bounding box
         button.setPickOnBounds(false);

@@ -4,12 +4,15 @@ import com.google.gson.annotations.SerializedName;
 import com.laggo.fauxsweeper.cell.HexagonalCell;
 import com.laggo.fauxsweeper.cell.ICell;
 import com.laggo.fauxsweeper.cell.SquareCell;
+import com.laggo.fauxsweeper.cell.TriangularCell;
 
 public enum CellType {
     @SerializedName("square")
     SQUARE,
-    @SerializedName("hexagonal")
-    HEXAGONAL;
+    @SerializedName("hexagon")
+    HEXAGONAL,
+    @SerializedName("triangle")
+    TRIANGULAR;
 
     public Class<? extends ICell> toClass() {
         switch (this) {
@@ -17,6 +20,8 @@ public enum CellType {
                 return SquareCell.class;
             case HEXAGONAL:
                 return HexagonalCell.class;
+            case TRIANGULAR:
+                return TriangularCell.class;
             default:
                 return null;
         }

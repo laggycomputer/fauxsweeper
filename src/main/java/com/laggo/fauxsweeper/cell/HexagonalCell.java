@@ -41,7 +41,6 @@ public class HexagonalCell extends BaseCell {
         final double sideLength = guiScale * 8;
 
         CellButton button = new CellButton();
-        this.addAttributes(button);
 
         button.setMaxSize(sideLength * 2, sideLength * 2);
         button.setMinSize(sideLength * 2, sideLength * 2);

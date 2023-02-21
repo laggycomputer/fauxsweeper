@@ -79,7 +79,8 @@ public abstract class BaseCell implements ICell {
     }
 
     /**
-     * Create button cell button.
+     * Creates a new {@link CellButton} to represent this cell. {@link #addAttributes(CellButton)} is already invoked
+     * so there is no need to call this from the implementation.
      *
      * @return The new {@link CellButton} which represents this cell.
      */
@@ -104,6 +105,7 @@ public abstract class BaseCell implements ICell {
     public CellButton getButton() {
         if (this.button == null) {
             this.button = this.createButton();
+            this.addAttributes(this.button);
         }
         return this.button;
     }

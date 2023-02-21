@@ -20,7 +20,6 @@ public class SquareCell extends BaseCell {
         final double guiScale = this.getBoard().getGuiScale();
 
         CellButton button = new CellButton();
-        this.addAttributes(button);
 
         button.setMaxSize(16 * guiScale, 16 * guiScale);
         button.setMinSize(16 * guiScale, 16 * guiScale);

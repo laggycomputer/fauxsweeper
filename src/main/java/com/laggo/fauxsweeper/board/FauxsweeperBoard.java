@@ -103,8 +103,7 @@ public class FauxsweeperBoard<CellT extends ICell> {
      * @return A new board object.
      */
     public static FauxsweeperBoard<? extends ICell> fromConfiguration(Configuration config) {
-        // TODO: different cell types
-        return new FauxsweeperBoard<>(HexagonalCell.class, config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled(), config.usesSetSeed() ? config.getSetSeed() : null, config.getGuiScale());
+        return new FauxsweeperBoard<>(config.getCellType().toClass(), config.getBoardWidth(), config.getBoardHeight(), config.getMineCount(), config.isTimerEnabled(), config.usesSetSeed() ? config.getSetSeed() : null, config.getGuiScale());
     }
 
     private void onTimerTick() {
